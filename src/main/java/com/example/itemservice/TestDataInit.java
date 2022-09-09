@@ -2,13 +2,10 @@ package com.example.itemservice;
 
 import com.example.itemservice.domain.item.Item;
 import com.example.itemservice.domain.item.ItemRepository;
-import com.example.itemservice.domain.item.ItemType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +19,7 @@ public class TestDataInit {
     @PostConstruct
     public void init() {
         itemRepository.save(new Item("itemA", 10000, 10));
-        itemRepository.save(new Item("itemB", 20000,3));
+        itemRepository.save(new Item("itemB", 20000, 20));
     }
 
 }
