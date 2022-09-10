@@ -44,7 +44,8 @@ public class I18nConfig implements WebMvcConfigurer {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:messages");
+//        messageSource.setBasename("classpath:messages");
+        messageSource.setBasenames("classpath:messages", "classpath:errors");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setCacheSeconds(10 * 60); // 리로드 시간
         return messageSource;

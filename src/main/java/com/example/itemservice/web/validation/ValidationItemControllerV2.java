@@ -47,6 +47,9 @@ public class ValidationItemControllerV2 {
 
     @PostMapping("/add")
     public String addItem(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        log.info("objectName={}", bindingResult.getObjectName());
+        log.info("target={}", bindingResult.getTarget());
+
         // item validation v1
 //        if(!itemValidationV1(item, model).isEmpty()) {
 //            log.error("error = {}", errors);
@@ -61,7 +64,19 @@ public class ValidationItemControllerV2 {
 //        }
 
         // item validation v3
-        if (itemValidationV3(item, bindingResult).hasErrors()) {
+//        if (itemValidationV3(item, bindingResult).hasErrors()) {
+//            log.error("error = {}", bindingResult);
+//            return "validation/v2/addForm";
+//        }
+
+        // item validation v4
+//        if (itemValidationV4(item, bindingResult).hasErrors()) {
+//            log.error("error = {}", bindingResult);
+//            return "validation/v2/addForm";
+//        }
+
+        // item validation v5
+        if (itemValidationV5(item, bindingResult).hasErrors()) {
             log.error("error = {}", bindingResult);
             return "validation/v2/addForm";
         }
@@ -97,7 +112,19 @@ public class ValidationItemControllerV2 {
 //        }
 
         // item validation v3
-        if (itemValidationV3(item, bindingResult).hasErrors()) {
+//        if (itemValidationV3(item, bindingResult).hasErrors()) {
+//            log.error("error = {}", bindingResult);
+//            return "validation/v2/editForm";
+//        }
+
+        // item validation v4
+//        if (itemValidationV4(item, bindingResult).hasErrors()) {
+//            log.error("error = {}", bindingResult);
+//            return "validation/v2/editForm";
+//        }
+
+        // item validation v5
+        if (itemValidationV5(item, bindingResult).hasErrors()) {
             log.error("error = {}", bindingResult);
             return "validation/v2/editForm";
         }
@@ -112,6 +139,58 @@ public class ValidationItemControllerV2 {
         return "redirect:/validation/v2/items";
     }
 
+    private BindingResult itemValidationV5(Item item, BindingResult bindingResult) {
+        if (!StringUtils.hasText(item.getItemName())) { // 상품명: 필수, 공백X
+            // bindingResult.addError(new FieldError("item", "itemName", item.getItemName(), false, new String[]{"required.item.itemName"}, null, null));
+            bindingResult.rejectValue("itemName", "required");
+        }
+
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) { // 가격: 1000원 이상, 1백만원 이하
+
+            // bindingResult.addError(new FieldError("item", "price", item.getPrice(), false, new String[]{"range.item.price"}, new Object[]{1000, 1000000}, null));
+            bindingResult.rejectValue("price", "range", new Object[]{1000, 1000000}, null);
+        }
+
+        if (item.getQuantity() == null || item.getQuantity() >= 9999) { // 수량: 최대 9999
+            //bindingResult.addError(new FieldError("item", "quantity", item.getQuantity(), false, new String[]{"max.item.quantity"}, new Object[]{9999}, null));
+            bindingResult.rejectValue("quantity", "max", new Object[]{9999}, null);
+        }
+
+        //특정 필드가 아닌 복합 룰 검증
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                //bindingResult.addError(new ObjectError("item", new String[]{"totalPriceMin"}, new Object[]{10000, resultPrice}, null));
+                bindingResult.reject("totalPriceMin", new Object[]{10000, resultPrice}, null);
+            }
+        }
+
+        return bindingResult;
+    }
+
+    private BindingResult itemValidationV4(Item item, BindingResult bindingResult) {
+        if (!StringUtils.hasText(item.getItemName())) { // 상품명: 필수, 공백X
+            bindingResult.addError(new FieldError("item", "itemName", item.getItemName(), false, new String[]{"required.item.itemName"}, null, null));
+        }
+
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) { // 가격: 1000원 이상, 1백만원 이하
+            bindingResult.addError(new FieldError("item", "price", item.getPrice(), false, new String[]{"range.item.price"}, new Object[]{1000, 1000000}, null));
+        }
+
+        if (item.getQuantity() == null || item.getQuantity() >= 9999) { // 수량: 최대 9999
+            bindingResult.addError(new FieldError("item", "quantity", item.getQuantity(), false, new String[]{"max.item.quantity"}, new Object[]{9999}, null));
+        }
+
+        //특정 필드가 아닌 복합 룰 검증
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int resultPrice = item.getPrice() * item.getQuantity();
+            if (resultPrice < 10000) {
+                bindingResult.addError(new ObjectError("item", new String[]{"totalPriceMin"}, new Object[]{10000, resultPrice}, null));
+            }
+        }
+
+        return bindingResult;
+    }
 
     private BindingResult itemValidationV3(Item item, BindingResult bindingResult) {
         if (!StringUtils.hasText(item.getItemName())) { // 상품명: 필수, 공백X
