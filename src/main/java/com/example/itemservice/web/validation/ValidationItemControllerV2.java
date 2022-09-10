@@ -10,7 +10,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -25,6 +26,13 @@ import java.util.Map;
 public class ValidationItemControllerV2 {
 
     private final ItemRepository itemRepository;
+    private final ItemValidator itemValidator;
+
+    @InitBinder
+    public void init(WebDataBinder dataBinder) {
+        log.info("init binder {}", dataBinder);
+        dataBinder.addValidators(itemValidator);
+    }
 
     @GetMapping
     public String items(Model model) {
@@ -47,7 +55,7 @@ public class ValidationItemControllerV2 {
     }
 
     @PostMapping("/add")
-    public String addItem(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         log.info("objectName={}", bindingResult.getObjectName());
         log.info("target={}", bindingResult.getTarget());
 
@@ -77,7 +85,20 @@ public class ValidationItemControllerV2 {
 //        }
 
         // item validation v5
-        if (itemValidationV5(item, bindingResult).hasErrors()) {
+//        if (itemValidationV5(item, bindingResult).hasErrors()) {
+//            log.error("error = {}", bindingResult);
+//            return "validation/v2/addForm";
+//        }
+
+        // item validation v6
+//        itemValidator.validate(item, bindingResult);
+//        if(bindingResult.hasErrors()) {
+//            log.error("error = {}", bindingResult);
+//            return "validation/v2/addForm";
+//        }
+
+        // item validation v7
+        if (bindingResult.hasErrors()) {
             log.error("error = {}", bindingResult);
             return "validation/v2/addForm";
         }
@@ -98,7 +119,7 @@ public class ValidationItemControllerV2 {
     }
 
     @PostMapping("/{itemId}/edit")
-    public String edit(@PathVariable Long itemId, @ModelAttribute Item item, BindingResult bindingResult) {
+    public String edit(@PathVariable Long itemId, @Validated @ModelAttribute Item item, BindingResult bindingResult) {
         // validation v1
 //        if(!itemValidationV1(item, model).isEmpty()) {
 //            log.error("error = {}", errors);
@@ -125,7 +146,20 @@ public class ValidationItemControllerV2 {
 //        }
 
         // item validation v5
-        if (itemValidationV5(item, bindingResult).hasErrors()) {
+//        if (itemValidationV5(item, bindingResult).hasErrors()) {
+//            log.error("error = {}", bindingResult);
+//            return "validation/v2/editForm";
+//        }
+
+        // item validation v6
+//        itemValidator.validate(item, bindingResult);
+//        if(bindingResult.hasErrors()) {
+//            log.error("error = {}", bindingResult);
+//            return "validation/v2/editForm";
+//        }
+
+        // item validation v7
+        if(bindingResult.hasErrors()) {
             log.error("error = {}", bindingResult);
             return "validation/v2/editForm";
         }
