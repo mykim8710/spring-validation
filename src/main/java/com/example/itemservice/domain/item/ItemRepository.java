@@ -34,6 +34,11 @@ public class ItemRepository {
         findItem.setQuantity(updateParam.getQuantity());
     }
 
+    public void delete(Long itemId) {
+        store.remove(itemId);
+
+    }
+
     public void clearStore() {
         store.clear();
     }
