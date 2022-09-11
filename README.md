@@ -12,7 +12,7 @@
     - Artifact: item-service
     - Name: spring-validation
     - Package name: com.example.itemservice
-- Dependencies: **Spring Web**, **Thymeleaf**, **Lombok**
+- Dependencies: **Spring Web**, **Thymeleaf**, **Lombok**, **Validation**
 
 
 ## Spring - validation
