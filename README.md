@@ -27,3 +27,4 @@
   - Item 저장, 수정 각각 Validator적용
     - 방법1 : groups적용
     - 방법2 : 전송객체 분리(ItemSaveFormDto, ItemUpdateFormDto)
+  - @RequestBody에서의 Bean Validation 적용
