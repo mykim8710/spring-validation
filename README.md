@@ -10,7 +10,7 @@
 - Project Metadata
     - Group: com.example
     - Artifact: item-service
-    - Name: spring-message
+    - Name: spring-validation
     - Package name: com.example.itemservice
 - Dependencies: **Spring Web**, **Thymeleaf**, **Lombok**
 
